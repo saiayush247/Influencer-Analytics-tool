@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: youtube-analytics-frontend
+    env: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://youtube-analytics-api.onrender.com
+
+  - type: web
+    name: youtube-analytics-api
+    env: node
+    rootDir: backend/node-api
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 4001
+      - key: PYTHON_SCRAPER_URL
+        value: https://youtube-analytics-scraper.onrender.com
+
+  - type: web
+    name: youtube-analytics-scraper
+    env: python
+    rootDir: backend/python-scraper
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PORT
+        value: 5001
